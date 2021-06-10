@@ -54,7 +54,7 @@ public class JanusServer implements Runnable, IJanusMessageObserver, IJanusSessi
             IJanusPluginCallbacks cb = cbs[0];
             try {
                 JSONObject obj = new JSONObject();
-                obj.put("janus", JanusMessageType.attach);
+                obj.put("codelabs", JanusMessageType.attach);
                 obj.put("plugin", cb.getPlugin());
                 if (serverConnection.getMessengerType() == JanusMessengerType.websocket)
                     obj.put("session_id", sessionId);
@@ -95,7 +95,7 @@ public class JanusServer implements Runnable, IJanusMessageObserver, IJanusSessi
     private void createSession() {
         try {
             JSONObject obj = new JSONObject();
-            obj.put("janus", JanusMessageType.create);
+            obj.put("codelabs", JanusMessageType.create);
             ITransactionCallbacks cb = JanusTransactionCallbackFactory.createNewTransactionCallback(this, TransactionType.create);
             String transaction = putNewTransaction(cb);
             obj.put("transaction", transaction);
@@ -123,7 +123,7 @@ public class JanusServer implements Runnable, IJanusMessageObserver, IJanusSessi
                 return;
             JSONObject obj = new JSONObject();
             try {
-                obj.put("janus", JanusMessageType.keepalive.toString());
+                obj.put("codelabs", JanusMessageType.keepalive.toString());
                 if (serverConnection.getMessengerType() == JanusMessengerType.websocket)
                     obj.put("session_id", sessionId);
                 obj.put("transaction", stringGenerator.randomString(12));
@@ -187,7 +187,7 @@ public class JanusServer implements Runnable, IJanusMessageObserver, IJanusSessi
 
     public void sendMessage(JSONObject msg, JanusMessageType type, BigInteger handle) {
         try {
-            msg.put("janus", type.toString());
+            msg.put("codelabs", type.toString());
             if (serverConnection.getMessengerType() == JanusMessengerType.websocket) {
                 msg.put("session_id", sessionId);
                 msg.put("handle_id", handle);
@@ -213,7 +213,7 @@ public class JanusServer implements Runnable, IJanusMessageObserver, IJanusSessi
         if (msg != null) {
             try {
                 JSONObject newMessage = new JSONObject();
-                newMessage.put("janus", JanusMessageType.message.toString());
+                newMessage.put("codelabs", JanusMessageType.message.toString());
 
                 if (serverConnection.getMessengerType() == JanusMessengerType.websocket) {
                     newMessage.put("session_id", sessionId);
@@ -236,7 +236,7 @@ public class JanusServer implements Runnable, IJanusMessageObserver, IJanusSessi
     public void sendMessage(TransactionType type, BigInteger handle, IPluginHandleWebRTCCallbacks callbacks, JanusSupportedPluginPackages plugin) {
         try {
             JSONObject msg = new JSONObject();
-            msg.put("janus", JanusMessageType.message.toString());
+            msg.put("codelabs", JanusMessageType.message.toString());
             if (serverConnection.getMessengerType() == JanusMessengerType.websocket) {
                 msg.put("session_id", sessionId);
                 msg.put("handle_id", handle);
@@ -257,7 +257,7 @@ public class JanusServer implements Runnable, IJanusMessageObserver, IJanusSessi
     @Override
     public void receivedNewMessage(JSONObject obj) {
         try {
-            JanusMessageType type = JanusMessageType.fromString(obj.getString("janus"));
+            JanusMessageType type = JanusMessageType.fromString(obj.getString("codelabs"));
             String transaction = null;
             BigInteger sender = null;
             if (obj.has("transaction")) {

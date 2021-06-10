@@ -5,6 +5,8 @@ import android.util.Log;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.math.BigInteger;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 
 import com.koushikdutta.async.ByteBufferList;
 import com.koushikdutta.async.DataEmitter;
@@ -15,6 +17,10 @@ import com.koushikdutta.async.http.AsyncHttpClient;
 import com.koushikdutta.async.http.WebSocket;
 
 import org.json.JSONObject;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 
 /**
@@ -38,6 +44,14 @@ public class JanusWebsocketMessenger implements IJanusMessenger {
     }
 
     public void connect() {
+        try {
+            SSLContext sslContext = SSLContext.getInstance("TLS");
+            sslContext.init(null, new TrustManager[]{new TrustAllManager()}, null);
+            AsyncHttpClient.getDefaultInstance().getSSLSocketMiddleware().setSSLContext(sslContext);
+        } catch (Exception e) {
+//            if (CodeLabsHelper.showLogOrPrintLn())
+                Log.e("LOG_TAG", "e: " + e);
+        }
         AsyncHttpClient.getDefaultInstance().websocket(uri, "janus-protocol", new AsyncHttpClient.WebSocketConnectCallback() {
             @Override
             public void onCompleted(Exception ex, WebSocket webSocket) {
@@ -147,3 +161,27 @@ public class JanusWebsocketMessenger implements IJanusMessenger {
         }
     }
 }
+
+class TrustAllManager implements X509TrustManager {
+
+    @Override
+    public void checkClientTrusted(X509Certificate[] arg0, String arg1)
+            throws CertificateException {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void checkServerTrusted(X509Certificate[] arg0, String arg1)
+            throws CertificateException {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public X509Certificate[] getAcceptedIssuers() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+}
+

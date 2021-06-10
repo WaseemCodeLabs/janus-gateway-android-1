@@ -19,7 +19,7 @@ public class JanusSendPluginMessageTransaction implements ITransactionCallbacks 
 
     public void reportSuccess(JSONObject obj) {
         try {
-            JanusMessageType type = JanusMessageType.fromString(obj.getString("janus"));
+            JanusMessageType type = JanusMessageType.fromString(obj.getString("codelabs"));
             switch (type) {
                 case success: {
                     JSONObject plugindata = obj.getJSONObject("plugindata");

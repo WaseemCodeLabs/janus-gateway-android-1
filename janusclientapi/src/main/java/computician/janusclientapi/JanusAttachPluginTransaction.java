@@ -25,7 +25,7 @@ public class JanusAttachPluginTransaction implements ITransactionCallbacks {
     @Override
     public void reportSuccess(JSONObject obj) {
         try {
-            JanusMessageType type = JanusMessageType.fromString(obj.getString("janus"));
+            JanusMessageType type = JanusMessageType.fromString(obj.getString("codelabs"));
             if (type != JanusMessageType.success) {
                 callbacks.onCallbackError(obj.getJSONObject("error").getString("reason"));
             } else {
